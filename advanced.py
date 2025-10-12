@@ -1,97 +1,85 @@
-import streamlit as st
-from random import randint
+import  streamlit as st
+import random
+
+st.title('WELCOME')
 
 with st.sidebar:
-    st.header('Kyrgyz AI')
-    option = st.radio('Options', ['Main', 'Palindrome', 'Calculator', 'Find the number'])
+    st.header('MENU')
+    v = st.radio('Choose', ['palindrom', 'calculator', 'game'])
 
 
-if option == 'Main':
-    st.title('Welcome to Kyrgyz AI')
+if v == 'palindrom':
+    st.title('Check palindrome')
+    word = st.text_input('Type word:')
 
-elif option == 'Palindrome':
-    st.title('Palindrome checker')
-    user_word = st.text_input('Type to check palindrome:', placeholder='write something')
-    if st.button('Check'):
-        if user_word == user_word[::-1]:
-            st.success(f'{user_word} is palindrome')
-        else:
-            st.error(f'{user_word} is NOT palindrome')
+if st.button('Check'):
+    if word == '':
+        st.warning('Type word!')
+    elif word == word[::-1]:
+         st.success(f'{word} is palindrome!')
+    else:
+         st.error(f'{word} — is NOT palindrome!')
 
-elif option == 'Calculator':
-    st.title('Calculator program')
-    first_num = st.number_input('First number', step=1)
-    second_num = st.number_input('Second number', step=1)
-    symbol = st.selectbox('Choose operation', ['*', '/', '+', '-'])
+
+
+elif v == 'calculator':
+    st.title('Simple calculator ')
+
+
+    num1 = st.number_input('Type first number:')
+    num2 = st.number_input('Type second number:')
+
+    operation = st.selectbox('Choose operation:', ['+', '-', '*', '/'])
     if st.button('Calculate'):
-        if symbol == '*':
-            st.success(f'Result: {first_num * second_num}')
-        if symbol == '/':
-            st.success(f'Result: {first_num / second_num}')
-        if symbol == '+':
-            st.success(f'Result: {first_num + second_num}')
-        if symbol == '-':
-            st.success(f'Result: {first_num - second_num}')
+        if operation == '+':
+            result = num1 + num2
+        elif operation == '-':
+            result = num1 - num2
+        elif operation == '*':
+            result = num1 * num2
+        elif operation == '/':
+            if num2 == 0:
+                st.error('It is impossible to divide by zero!')
+            else:
+                result = num1 / num2
+        else:
+            result = None
 
-if option == 'Find the number':
-    num_from = st.number_input('From:', step=1, key='first')
-    num_to = st.number_input('To:', step=1, key='second')
-    random_num = randint(num_from, num_to)
-    for i in range(5):
-        user = st.number_input('Your option:', step=1)
+        if operation != '/' or num2 != 0:
+            st.info(f'Result: {num1} {operation} {num2} = {result}')
+
+
+
+
+elif v == 'game':
+    st.title('Guess the number ')
+
+
+    number_one = st.number_input('Lowest number:', value=1, step=1)
+    number_two = st.number_input('Highest number:', value=10, step=1)
+
+
+    if 'secret_number' not in st.session_state:
+        st.session_state.secret_number = None
+    if 'count' not in st.session_state:
+        st.session_state.count = 0
+
+
+    if st.button('Start the ga e'):
+        st.session_state.secret_number = random.randint(number_one, number_two)
+        st.session_state.count = 0
+        st.success(f'The game is started!')
+
+
+    if st.session_state.secret_number:
+        number = st.number_input(f'Type any number between {int(number_one)} and {int(number_two)}:', step=1)
         if st.button('Check'):
-            if user == random_num:
-                st.success('Congratulations!')
-                break
-            elif user > random_num:
-                st.info(f'Random number is less than {user}')
-            elif user < random_num:
-                st.info(f'Random number is greater than {user}')
+            st.session_state.count += 1
+            if number > st.session_state.secret_number:
+                st.warning('This number is greater')
+            elif number < st.session_state.secret_number:
+                st.info('This number is less')
+            else:
+                st.success(f'Congratulations {st.session_state.secret_number} you found for {st.session_state.count} attempts!')
 
-
-    # while True:
-    #     user = st.number_input('Your option:', step=1)
-    #     if st.button('Check'):
-    #         if user == random_num:
-    #             st.success('Congratulations!')
-    #             break
-    #         elif user > random_num:
-    #             st.info(f'Random number is less than {user}')
-    #         elif user < random_num:
-    #             st.info(f'Random number is greater than {user}')
-
-# if 'random_num' not in st.session_state:
-#     st.session_state.random_num = None
-#
-# if 'game_started' not in st.session_state:
-#     st.session_state.game_started = False
-#
-# option = 'Find the number'
-#
-# if option == 'Find the number':
-#     num_from = st.number_input('From:', step=1, key='first')
-#     num_to = st.number_input('To:', step=1, key='second')
-#
-#     if st.button('Start Game'):
-#         if num_from >= num_to:
-#             st.error("⚠️ 'From' should be less than 'To'")
-#         else:
-#             st.session_state.random_num = randint(num_from, num_to)
-#             st.session_state.game_started = True
-#             st.success('Game started! Try to guess the number.')
-#
-#     if st.session_state.game_started:
-#         user = st.number_input('Your guess:', step=1, key='guess')
-#         if st.button('Check'):
-#             random_num = st.session_state.random_num
-#             if user == random_num:
-#                 st.success('🎉 Congratulations! You guessed the number!')
-#                 st.session_state.game_started = False
-#             elif user > random_num:
-#                 st.info('🔽 Random number is less than your guess.')
-#             else:
-#                 st.info('🔼 Random number is greater than your guess.')
-
-# else:
-#     st.info('This page is not realized yet')
-
+                st.session_state.secret_number = None
