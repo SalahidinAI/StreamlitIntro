@@ -12,13 +12,13 @@ if v == 'palindrom':
     st.title('Check palindrome')
     word = st.text_input('Type word:')
 
-if st.button('Check'):
-    if word == '':
-        st.warning('Type word!')
-    elif word == word[::-1]:
-         st.success(f'{word} is palindrome!')
-    else:
-         st.error(f'{word} — is NOT palindrome!')
+    if st.button('Check'):
+        if word == '':
+            st.warning('Type word!')
+        elif word == word[::-1]:
+             st.success(f'{word} is palindrome!')
+        else:
+             st.error(f'{word} — is NOT palindrome!')
 
 
 
@@ -65,7 +65,7 @@ elif v == 'game':
         st.session_state.count = 0
 
 
-    if st.button('Start the ga e'):
+    if st.button('Start the game'):
         st.session_state.secret_number = random.randint(number_one, number_two)
         st.session_state.count = 0
         st.success(f'The game is started!')
